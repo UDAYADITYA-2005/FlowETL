@@ -1,0 +1,77 @@
+==============================================================
+  ETL PIPELINE RUN REPORT
+  Run ID    : 20260422_014448
+  Timestamp : 2026-04-22 01:44:52
+==============================================================
+
+  EXTRACTION SUMMARY
+  ----------------------------------------
+  population     : 32 rows extracted
+  literacy       : 32 rows extracted
+  employment     : 31 rows extracted
+  TOTAL          : 95 rows
+
+  TRANSFORM SUMMARY
+  ----------------------------------------
+  population     : 6 nulls at extraction
+  literacy       : 14 nulls at extraction
+  employment     : 4 nulls at extraction
+  Rows dropped (dedup/merge): 69
+  Derived columns added    : 5
+  Final merged rows        : 26
+  Final columns            : 29
+
+  LOAD SUMMARY
+  ----------------------------------------
+  Table       : india_state_census
+  DB path     : C:\Users\udaya\OneDrive\Documents\Desktop\etl_pipeline\data\processed\india_census.db
+  Rows loaded : 26
+  Status      : SUCCESS
+
+  TIMING
+  ----------------------------------------
+  extract        : 0.10s
+  transform      : 0.10s
+  load           : 0.12s
+  TOTAL          : 0.32s
+
+  DATA QUALITY LOG
+  ----------------------------------------
+  [QC] population:columns: standardised 10 column names
+  [QC] population:state_names: standardised 6 dirty state name variants
+  [QC] population:derive: derived rural_population_pct = 100 - urban_population_pct
+  [QC] population:impute:population_density: filled 6 nulls with median=7006.55
+  [QC] population:impute_total: nulls reduced from 6 to 0
+  [QC] population:dedup: removed 1 duplicate rows on key='state'
+  [QC] literacy:columns: standardised 10 column names
+  [QC] literacy:state_names: standardised 9 dirty state name variants
+  [QC] literacy:derive: derived gender_literacy_gap = male_rate - female_rate
+  [QC] literacy:impute:literacy_rate_overall: filled 1 nulls with median=73.14
+  [QC] literacy:impute:literacy_rate_male: filled 4 nulls with median=82.24
+  [QC] literacy:impute:literacy_rate_female: filled 4 nulls with median=67.06
+  [QC] literacy:impute:primary_schools_per_1000: filled 1 nulls with median=6.21
+  [QC] literacy:impute:higher_education_institutions: filled 1 nulls with median=259.00
+  [QC] literacy:impute:govt_schools_pct: filled 1 nulls with median=78.55
+  [QC] literacy:impute:survey_year: filled 1 nulls with median=2011.00
+  [QC] literacy:impute:gender_literacy_gap: filled 7 nulls with median=16.93
+  [QC] literacy:impute:state: filled 1 nulls with 'Unknown'
+  [QC] literacy:impute_total: nulls reduced from 21 to 0
+  [QC] literacy:dedup: removed 0 duplicate rows on key='state'
+  [QC] employment:columns: standardised 11 column names
+  [QC] employment:state_names: standardised 7 dirty state name variants
+  [QC] employment:impute:unemployment_rate_pct: filled 4 nulls with median=6.10
+  [QC] employment:impute_total: nulls reduced from 4 to 0
+  [QC] employment:dedup: removed 0 duplicate rows on key='state'
+  [QC] merge:derive: derived literacy_employment_ratio
+  [QC] merge:derive: derived population_per_school
+  [QC] merge:derive: derived dev_index (composite: literacy + employment + income)
+  [QC] final_check: remaining nulls after all transforms: 0
+
+  CHARTS GENERATED
+  ----------------------------------------
+  01_null_rates.png
+  02_rows_per_source.png
+  03_dev_index.png
+  04_literacy_vs_income.png
+
+==============================================================
