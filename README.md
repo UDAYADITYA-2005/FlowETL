@@ -1,7 +1,3 @@
-Here is a simple, professional `README.md` for your **etl_pipeline** (FlowETL) project, matching the style and structure of your previous one.
-
-***
-
 ### FlowETL: Modular Batch Processing Pipeline
 
 **Project Overview**
