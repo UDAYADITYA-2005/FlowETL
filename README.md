@@ -1,73 +1,93 @@
-# SmartIngest — Multi-Source CSV-to-DB ETL Pipeline
+Here is a simple, professional `README.md` for your **etl_pipeline** (FlowETL) project, matching the style and structure of your previous one.
 
-An end-to-end ETL pipeline in Python that ingests Indian Census data from 3 CSV sources,
-applies Medallion-style transformations (Bronze → Silver → Gold), loads into SQLite,
-and exposes results through an interactive Streamlit dashboard.
+***
 
-## Project Structure
+### FlowETL: Modular Batch Processing Pipeline
 
+**Project Overview**
+FlowETL is a traditional, production-ready data engineering pipeline designed to handle the core **Extract, Transform, Load** lifecycle. Built for scalability and modularity, the project automates the movement of data from various raw formats into a structured, analytics-ready environment, supported by a custom monitoring dashboard and robust logging.
+
+**Architecture Flowchart**
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                       DATA SOURCES                          │
+│           CSV Files  |  JSON Files  |  REST APIs            │
+└──────────────┬─────────────────┬───────────────┬────────────┘
+               │                 │               │
+               ▼                 ▼               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      📥 EXTRACT LAYER                       │
+│       Multi-source Ingestion → Raw Data Staging             │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    ⚙️ TRANSFORM LAYER                       │
+│   Data Cleansing | Type Casting | Business Logic Application│
+│        Standardization & Handling of Missing Values         │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                        📤 LOAD LAYER                        │
+│     Final Data Consolidation → Parquet & CSV Exports        │
+│          Preparation for Downstream Analytics               │
+└───────────────────────────┬────────────┬────────────────────┘
+                            │            │
+                            ▼            ▼
+            ┌────────────────────────────────┐
+            │   📊 Monitoring & Delivery     │
+            │   • Custom HTML Dashboard      │
+            │   • Structured Log Reports     │
+            │   • Pipeline Status Metrics    │
+            └────────────────────────────────┘
 ```
-etl_pipeline/
-├── generate_data.py     # Seed 3 realistic CSV datasets
-├── config.py            # Central config (paths, validation rules, state map)
-├── logger.py            # Shared logger (console + file)
-├── extract.py           # BRONZE: read CSVs, tag source, log nulls
-├── transform.py         # SILVER: clean, standardize, merge, derive columns
-├── load.py              # GOLD: validate, load to SQLite with ACID transaction
-├── report.py            # Charts + text run summary
-├── pipeline.py          # Orchestrator: runs Extract → Transform → Load → Report
-├── dashboard.py         # Streamlit frontend
-├── requirements.txt
-├── queries/
-│   └── analytics.sql    # 10 analytical SQL queries (window fns, CTEs, CASE WHEN)
-├── data/
-│   ├── raw/             # Source CSV files (generated)
-│   └── processed/       # SQLite database
-├── reports/             # Per-run text reports + chart PNGs
-└── logs/                # Per-run .log files
-```
 
-## Quick Start
+**Detailed Pipeline Stages**
+The system is architected into specific modules to ensure a clean separation of concerns:
 
+1.  **Extraction (`extract.py`):** The entry point of the pipeline. It handles the connections to various data sources, including local file systems and external APIs, fetching raw data into a centralized staging area.
+2.  **Transformation (`transform.py`):** The processing engine. This module applies data-cleansing rules, enforces data types, and executes the necessary business logic to convert raw records into a consistent format.
+3.  **Loading (`load.py`):** The final stage of the ETL flow. It handles the efficient storage of processed data into high-performance formats like Apache Parquet and accessible CSVs for final reporting.
+4.  **Monitoring & Reporting (`report.py` & `dashboard.py`):** A dedicated layer that provides visibility into the pipeline's performance. It tracks record counts, execution times, and success rates, serving them through a live dashboard.
+5.  **Orchestration (`pipeline.py`):** The main controller that manages the sequence of operations, ensuring that each layer executes only upon the successful completion of the previous stage.
+
+**How to Run the Project locally**
+
+**1. Clone the repository**
 ```bash
-# 1. Install dependencies
-pip install -r requirements.txt
+git clone https://github.com/UDAYADITYA-2005/etl_pipeline.git
+cd etl_pipeline
+```
 
-# 2. Generate sample datasets
+**2. Create and activate a virtual environment**
+* **Windows:**
+    ```bash
+    python -m venv venv
+    venv\Scripts\activate
+    ```
+* **Mac / Linux:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+**3. Install dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+**4. Generate sample data & run the pipeline**
+```bash
+# Optional: Generate synthetic data for testing
 python generate_data.py
 
-# 3. Run the full ETL pipeline
+# Run the full ETL process
 python pipeline.py
-
-# 4. Launch the dashboard
-streamlit run dashboard.py
 ```
 
-## Pipeline Layers
-
-| Layer | Module | What happens |
-|---|---|---|
-| Bronze | `extract.py` | Reads 3 CSVs as-is, adds `_source` and `_extracted_at` tags |
-| Silver | `transform.py` | Standardizes columns, cleans state names, imputes nulls, deduplicates, merges, derives 5 new columns |
-| Gold | `load.py` | Validates (5 checks), loads into SQLite atomically, creates indexes |
-
-## Key Features
-
-- Modular Extract / Transform / Load architecture
-- Automated data quality checks with rollback on failure
-- State name standardization (UP → Uttar Pradesh etc.)
-- Null imputation (median for numeric, Unknown for categorical)
-- 5 derived analytical columns including a composite development index
-- Per-run structured logging to file and console
-- 4 Matplotlib charts auto-generated per run
-- Streamlit dashboard with SQL Workbench, Data Explorer, and Report Viewer
-
-## Data Sources
-
-All datasets generated via `generate_data.py` using realistic Indian census parameters.
-Production equivalent: data.gov.in (OGDL v1.0 license — free for personal/educational use).
-
-## License
-
-MIT License. Original code by Gali Uday Aditya.
-Data generated synthetically for educational use.
+**5. View the dashboard**
+```bash
+python dashboard.py
+```
+Once the dashboard script is running, open your web browser to the local address provided in the terminal to see your processed data metrics.
